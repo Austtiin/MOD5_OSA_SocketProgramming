@@ -14,6 +14,7 @@ public class Client {
     private DataOutputStream out = null;
 
     public Client(String address, int port) {
+
         try {
             // Connect to the server
             socket = new Socket(address, port);
@@ -50,6 +51,8 @@ public class Client {
     }
 
     public static void main(String args[]) {
+
         Client client = new Client("127.0.0.1", 5000);
+
     }
 }

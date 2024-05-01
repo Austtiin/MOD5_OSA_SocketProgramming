@@ -10,21 +10,27 @@ import java.util.Date;
 
 public class Server1 {
     private ServerSocket serverSocket = null;
+    private int clientNumber = 0;
 
     public Server1(int port) {
         try {
-            // Create server socket
+            //Create our server socket
             serverSocket = new ServerSocket(port);
-            System.out.println("Server started on port " + port);
+            System.out.println("Server Started:  " + port);
 
-            // Continuously listen for client connections
+            //Listen for incoming connections
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                // Start a separate thread to handle each client
-                new ClientHandler(clientSocket).start();
+                //We want to label the connected clients
+                clientNumber++;
+                System.out.println("Client " + clientNumber + " connected.");
+
+               //Show the client number and start the client handler
+                new ClientHandler(clientSocket, clientNumber).start();
             }
         } catch (IOException e) {
             System.out.println("Error in server: " + e.getMessage());
+            //Close the server socket
         } finally {
             if (serverSocket != null) {
                 try {
@@ -40,47 +46,59 @@ public class Server1 {
         Server1 server = new Server1(5000);
     }
 
-    // Inner class to handle client connections
+    //Class to handle client connections
     private static class ClientHandler extends Thread {
         private Socket clientSocket;
         private DataInputStream in = null;
         private DataOutputStream out = null;
+        private int clientNumber;
 
-        public ClientHandler(Socket socket) {
+        public ClientHandler(Socket socket, int clientNumber) {
+            //Assign the client socket and client number
             this.clientSocket = socket;
+            this.clientNumber = clientNumber;
         }
 
         public void run() {
             try {
-                // Initialize input and output streams
+                //Initialize input and output streams
                 in = new DataInputStream(clientSocket.getInputStream());
                 out = new DataOutputStream(clientSocket.getOutputStream());
 
                 String line = "";
-                // Continuously listen for messages from the client
+                //COntinuously read input from the client and send responses
                 while (!line.equals("Close")) {
                     line = in.readUTF();
-                    System.out.println("Client: " + line);
+                    System.out.println("Client " + clientNumber + ": " + line);
 
-                    // Get current date and time
+                    //Grab the current date and time
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String currentDateAndTime = dateFormat.format(new Date());
 
-                    // Send acknowledgment and current date/time to client
+                    //Send the current date and time to the client
                     out.writeUTF("Message received at " + currentDateAndTime);
                 }
             } catch (IOException e) {
-                System.out.println("Error handling client: " + e.getMessage());
+                System.out.println("Error handling client " + clientNumber + ": " + e.getMessage());
             } finally {
-                // Close connections
-                try {
-                    if (in != null) in.close();
-                    if (out != null) out.close();
-                    clientSocket.close();
-                } catch (IOException e) {
-                    System.out.println("Error closing client socket: " + e.getMessage());
+                //Close the input and output streams
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        System.out.println("Error closing input stream: " + e.getMessage());
+                    }
                 }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        System.out.println("Error closing output stream: " + e.getMessage());
+                    }
+                }
+
             }
         }
+
     }
 }
