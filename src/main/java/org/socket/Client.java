@@ -12,9 +12,9 @@ public class Client {
     private BufferedReader userInput = null;
     private BufferedReader in = null;
     private DataOutputStream out = null;
+    private int clientNumber = 0;
 
     public Client(String address, int port) {
-
         try {
             // Connect to the server
             socket = new Socket(address, port);
@@ -26,6 +26,10 @@ public class Client {
 
             // Initialize output stream to server
             out = new DataOutputStream(socket.getOutputStream());
+
+            // Read the assigned client number from the server
+            clientNumber = Integer.parseInt(in.readLine());
+            System.out.println("You are client number: " + clientNumber);
 
             String line = "";
             // Continuously read input from console and send it to the server
@@ -51,8 +55,6 @@ public class Client {
     }
 
     public static void main(String args[]) {
-
         Client client = new Client("127.0.0.1", 5000);
-
     }
 }
