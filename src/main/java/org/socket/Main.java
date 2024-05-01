@@ -18,6 +18,12 @@ Where server can handle multiple clients simultaneously, e.g., multiple threads 
 Outputs client/server
 
 *
+*
+*
+* https://www.geeksforgeeks.org/socket-programming-cc/
+* https://www.ibm.com/docs/en/i/7.4?topic=communications-socket-programming
+* https://www.youtube.com/watch?v=uagKTbohimU
+*
 * */
 
 package org.socket;

@@ -6,69 +6,50 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-// A Java program for a Server
-import java.net.*;
-import java.io.*;// A Java program for a Client
-import java.io.*;
-import java.net.*;
 
 public class Client {
-    // initialize socket and input output streams
     private Socket socket = null;
-    private DataInputStream input = null;
+    private BufferedReader userInput = null;
+    private BufferedReader in = null;
     private DataOutputStream out = null;
 
-    // constructor to put ip address and port
-    public Client(String address, int port)
-    {
-        // establish a connection
+    public Client(String address, int port) {
         try {
+            // Connect to the server
             socket = new Socket(address, port);
-            System.out.println("Connected");
+            System.out.println("Connected to server.");
 
-            // takes input from terminal
-            input = new DataInputStream(System.in);
+            // Initialize input streams
+            userInput = new BufferedReader(new InputStreamReader(System.in));
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            // sends output to the socket
-            out = new DataOutputStream(
-                    socket.getOutputStream());
-        }
-        catch (UnknownHostException u) {
-            System.out.println(u);
-            return;
-        }
-        catch (IOException i) {
-            System.out.println(i);
-            return;
-        }
+            // Initialize output stream to server
+            out = new DataOutputStream(socket.getOutputStream());
 
-        // string to read message from input
-        String line = "";
-
-        // keep reading until "Over" is input
-        while (!line.equals("Close")) {
-            try {
-                line = input.readLine();
+            String line = "";
+            // Continuously read input from console and send it to the server
+            while (!line.equals("Close")) {
+                line = userInput.readLine();
                 out.writeUTF(line);
-            }
-            catch (IOException i) {
-                System.out.println(i);
-            }
-        }
 
-        // close the connection
-        try {
-            input.close();
+                // Print server responses
+                String serverResponse = in.readLine();
+                System.out.println("Server: " + serverResponse);
+            }
+
+            // Close connections
+            userInput.close();
+            in.close();
             out.close();
             socket.close();
-        }
-        catch (IOException i) {
-            System.out.println(i);
+        } catch (UnknownHostException u) {
+            System.out.println("Unknown host: " + u.getMessage());
+        } catch (IOException i) {
+            System.out.println("IO Exception: " + i.getMessage());
         }
     }
 
-    public static void main(String args[])
-    {
+    public static void main(String args[]) {
         Client client = new Client("127.0.0.1", 5000);
     }
 }
