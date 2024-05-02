@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.net.Socket;
+import java.net.*;
+
 
 public class Client {
     private Socket socket = null;
@@ -14,17 +17,25 @@ public class Client {
 
     public Client(String address, int port) {
         try {
-            // Connect to the server
-            socket = new Socket(address, port);
-            System.out.println("Connected to server.");
+            try {
+                socket = new Socket(address, port);
+                System.out.println("Connected");
 
-            // Initialize input streams
-            userInput = new Scanner(System.in);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                // takes input from terminal
+                userInput = new Scanner(System.in);
 
-            // Initialize output stream to server
-            out = new DataOutputStream(socket.getOutputStream());
-
+                // sends output to the socket
+                out = new DataOutputStream(
+                        socket.getOutputStream());
+            }
+            catch (UnknownHostException u) {
+                System.out.println(u);
+                return;
+            }
+            catch (IOException i) {
+                System.out.println(i);
+                return;
+            }
             // Read the assigned client number from the server
             clientNumber = Integer.parseInt(in.readLine());
             System.out.println("You are client number: " + clientNumber);

@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Server1{
+public class Server1 {
     private ServerSocket serverSocket;
     private int clientNumber = 0;
 
@@ -60,6 +60,7 @@ public class Server1{
                 String line;
                 while (true) {
                     line = in.readUTF();
+
                     if (line.equals("Close")) {
                         break;
                     }
