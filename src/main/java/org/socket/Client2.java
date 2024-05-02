@@ -5,14 +5,14 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class Client {
+public class Client2 {
     private Socket socket = null;
     private Scanner userInput = null;
     private BufferedReader in = null;
     private DataOutputStream out = null;
     private int clientNumber = 0;
 
-    public Client(String address, int port) {
+    public Client2(String address, int port) {
         try {
             // Connect to the server
             socket = new Socket(address, port);
@@ -32,14 +32,10 @@ public class Client {
             String line = "";
             // Continuously read input from console and send it to the server
             while (!line.equals("Close")) {
-                // Get user input
-                System.out.print("Client: ");
                 line = userInput.nextLine();
-
-                // Send message to server
                 out.writeUTF(line);
 
-                // Receive and print server responses
+                // Print server responses
                 String serverResponse = in.readLine();
                 System.out.println("Server: " + serverResponse);
             }
@@ -57,6 +53,6 @@ public class Client {
     }
 
     public static void main(String args[]) {
-        Client client = new Client("127.0.0.1", 5000);
+        Client2 client = new Client2( "127.0.0.1", 5000);
     }
 }
